@@ -1,6 +1,5 @@
 from enum import Enum
-from textnode import TextType
-from textnode import TextNode
+from textnode import TextType, TextNode
 
 def main():
     new_textnode = TextNode("hello world", "bold", "www.com")
