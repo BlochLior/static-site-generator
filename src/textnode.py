@@ -15,12 +15,19 @@ class TextNode:
         self.url = url
 
     def __eq__(self, other):
-        if self.text == other.text:
-            if self.text_type == other.text_type:
-                if self.url == other.url:
-                    return True
-            
-        return False
+        if not isinstance(other, TextNode):
+            return False
+        
+        for attr in ["text", "text_type", "url"]:
+            if getattr(self, attr) != getattr(other, attr):
+                return False           
+        return True
     
+    def get_attr(self, attr_name):
+        value = getattr(self, attr_name, None)
+        return f"{attr_name}={value if value is not None else 'None'}"   
+
     def __repr__(self):
-        return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
+        attrs = ", ".join(self.get_attr(attr) for attr in ["text", "text_type", "url"])
+        return f"TextNode({attrs})"
+          
