@@ -43,4 +43,4 @@ class HTMLNode:
             if getattr(self, attr) != getattr(other, attr):
                 return False           
         return True
-
+    
