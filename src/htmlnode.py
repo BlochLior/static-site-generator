@@ -1,46 +1,50 @@
 class HTMLNode:
+    DEBUG = False # raise this banner True only when intensive debugging are afoot
     def __init__(self, tag=None, value=None, children=None, props=None):
-        # tag is a string representing the html tag name
+        if HTMLNode.DEBUG:
+            print(f"DEBUG: tag={tag}, value={value}, children={children}, props={props}")
+        
+        if props is not None and not isinstance(props, dict):
+            raise ValueError("Props must be a dictionary")
+        
         self.tag = tag
-        # value is a string representing the value of the 
-        # html tag (e.g. the text inside a paragraph)
         self.value = value
-        # children is a list of HTMLNode objects representing
-        # the children of this node
-        self.children = children
-        # props is a dictionary of key-value pairs 
-        # representing the attributes of the HTML tag
-        self.props = props
+        self.children = children or []  # Default to an empty list if None
+        self.props = props if props else {} 
+        for child in self.children:
+            if child is not None and not isinstance(child, HTMLNode):
+                raise ValueError("All children must be instances of HTMLNode or None!")
 
     def to_html(self):
         raise NotImplementedError
     
     def props_to_html(self):
-        if self.props == None:
-            return self.props
-        else:
-            props_copy = self.props.copy()
-            props_as_tup_lst = props_copy.items()
-            props_lst = []
-            for (key, value) in props_as_tup_lst:
-                item = f'{key}="{value}"'
-                props_lst.append(item)
-            return " ".join(props_lst)
+        if not self.props:
+            return ""
+        # Exclude None values
+        props_lst = [f'{key}="{value}"' for key, value in self.props.items() if value is not None]
+        return " ".join(props_lst)
     
     def get_attr(self, attr_name):
         value = getattr(self, attr_name, None)
+        if attr_name == "children":
+            # Show nothing if no children exist
+            return None if not value else f"{attr_name}={len(value)} children"
+        elif attr_name == "props":
+            # Properly format props if it contains multiple key-value pairs
+            return f"{attr_name}={{{', '.join(f'{k}={repr(v)}' for k, v in value.items())}}}" if value else None
         return f"{attr_name}={value if value is not None else 'None'}"
 
     def __repr__(self):
-        attrs = ", ".join(self.get_attr(attr) for attr in ["tag", "value", "children", "props"])
-        return f"HTMLNode({attrs})"    
+        attrs = ", ".join(attr for attr in (self.get_attr(attr) for attr in ["tag", "value", "children", "props"]) if attr)
+        return f"{self.__class__.__name__}({attrs})" 
 
     def __eq__(self, other):
         if not isinstance(other, HTMLNode):
             return False
-        
+        # Compare attributes directly, trusting they are valid
         for attr in ["tag", "value", "children", "props"]:
             if getattr(self, attr) != getattr(other, attr):
-                return False           
+                return False
         return True
     
