@@ -1,12 +1,9 @@
 import unittest
 
 from textnode import TextNode, TextType
+from htmlnode import HTMLNode
+from leafnode import LeafNode
 
-"""
-this test creates two TextNode objects with the same properties
-and asserts that they are equal. if the test passes when running
-in in the command ./test.sh, we did good. 
-"""
 class TestTextNode(unittest.TestCase):
     def test_text_repr(self):
         node = TextNode("This is a text node", TextType.BOLD)
@@ -34,6 +31,45 @@ class TestTextNode(unittest.TestCase):
         self.assertIsInstance(repr(node2), str)
         self.assertEqual(node, node2)
 
+    def test_textnode_to_htmlnode_normal_text(self):
+        textnode = TextNode("normal placeholder text", TextType.NORMAL)
+        trans = textnode.text_node_to_html_node()
+        expected = LeafNode(value="normal placeholder text")
+        self.assertEqual(trans, expected)
+        
+    def test_textnode_to_htmlnode_bold(self):
+        textnode = TextNode(text="this will be bold", text_type=TextType.BOLD)
+        trans = textnode.text_node_to_html_node()
+        expected = LeafNode(value="this will be bold", tag="b")
+        self.assertEqual(trans, expected)
+
+
+    def test_textnode_to_htmlnode_italics(self):
+        textnode = TextNode("will be italicized", TextType.ITALIC)
+        trans = textnode.text_node_to_html_node()
+        expected = LeafNode("will be italicized", "i")
+        self.assertEqual(trans, expected)
+
+    def test_textnode_to_htmlnode_code(self):
+        textnode = TextNode("this is encrypted", TextType.CODE)
+        trans = textnode.text_node_to_html_node()
+        expected = LeafNode("this is encrypted", "code")
+        self.assertEqual(trans, expected)
+
+    def test_textnode_to_htmlnode_link(self):
+        textnode = TextNode("click here!", TextType.LINKS, "https://youtube.com")
+        trans = textnode.text_node_to_html_node()
+        expected = LeafNode("click here!", "a", {"href": "https://youtube.com"})
+        self.assertEqual(trans, expected)
+
+    def test_textnode_to_htmlnode_image(self):
+        textnode = TextNode("a cat", TextType.IMAGES, "~/catphotoes/cat1.jpeg")
+        trans = textnode.text_node_to_html_node()
+        expected = LeafNode("", "img", {
+            "src": "~/catphotoes/cat1.jpeg",
+            "alt": "a cat"
+        })
+        self.assertEqual(trans, expected)
 
 if __name__ == "__main__":
     unittest.main()
