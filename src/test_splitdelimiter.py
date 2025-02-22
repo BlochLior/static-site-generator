@@ -44,5 +44,18 @@ class Testsplitdelimiter(unittest.TestCase):
         expected = old_nodes
         self.assertEqual(trans, expected)
 
+    def test_splitdelimiter_very_long_string(self):
+        s1 = "*italics_text*"
+        long_string = "".join([s1 for i in range(1000)])
+        node_list = [TextNode(long_string, TextType.NORMAL)]
+        delimiter = "*"
+        text_type = TextType.ITALIC
+        trans = split_nodes_delimiter(node_list, delimiter, text_type)
+        expected_node = TextNode("italics_text", TextType.ITALIC)
+        expected = [
+            expected_node for i in range(1000)
+        ]
+        self.assertEqual(trans, expected)
+
 if __name__ == "__main__":
     unittest.main()
