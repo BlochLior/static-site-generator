@@ -1,8 +1,10 @@
 class HTMLNode:
     DEBUG = False # raise this banner True only when intensive debugging are afoot
+    DEEP_DEBUG = False # this banner is truely for the most intensive of debugging
+
     def __init__(self, tag=None, value=None, children=None, props=None):
-        if HTMLNode.DEBUG:
-            print(f"DEBUG: tag={tag}, value={value}, children={children}, props={props}")
+        if HTMLNode.DEEP_DEBUG:
+            print(f"DEBUG: tag={tag}, value={value}, children={children}, props={props}\n")
         
         if props is not None and not isinstance(props, dict):
             raise ValueError("Props must be a dictionary")
