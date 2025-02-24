@@ -1,7 +1,6 @@
 from textnode import TextNode, TextType
 from htmlnode import HTMLNode
 
-# bear - i think i already have 6.
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes_list = []
     for node in old_nodes:
