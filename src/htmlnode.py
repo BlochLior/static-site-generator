@@ -1,7 +1,8 @@
 class HTMLNode:
-    DEBUG = False # raise this banner True only when intensive debugging are afoot
-    SPLITDELIMITER_DEBUG = False
-    EXTRACT_DEBUG = False
+    DEBUG = False # >>>>>>>>>>>>>>>raise this banner True only when intensive debugging are afoot
+    SPLITDELIMITER_DEBUG = False #>directed at split_nodes_delimiter func
+    EXTRACT_DEBUG = False #>>>>>>>>directed at extract_links and extract_images from markdown functions
+    SPLITIMGLINK_DEBUG = True #>>>>directed at split_nodes_image and split_nodes_link functions
 
     def __init__(self, tag=None, value=None, children=None, props=None):
         if HTMLNode.DEBUG:
