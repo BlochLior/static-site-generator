@@ -54,5 +54,6 @@ class TestMarkdowntoBlocks(unittest.TestCase):
         trans = markdown_to_blocks(text)
         expected = []
         self.assertEqual(trans, expected)
+
 if __name__ == "__main__":
     unittest.main()
