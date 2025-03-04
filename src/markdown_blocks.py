@@ -1,8 +1,8 @@
 from enum import Enum
 
-from src.htmlnode import ParentNode
-from src.inline_markdown import text_to_textnodes
-from src.textnode import text_node_to_html_node, TextNode, TextType
+from htmlnode import ParentNode
+from inline_markdown import text_to_textnodes
+from textnode import text_node_to_html_node, TextNode, TextType
 
 class BlockType(Enum):
     PARAGRAPH = "paragraph"
@@ -140,7 +140,24 @@ def quote_to_html_node(block):
     for line in lines:
         if not line.startswith(">"):
             raise ValueError("invalid quote block")
-        new_lines.append(line.lstrip(">").strip())
-    content = " ".join(new_lines)
+        # Remove the '>' and any leading whitespace, but keep trailing whitespace
+        if len(line) > 1:
+            new_lines.append(line[1:].lstrip())
+        else:
+            # Handle empty quote lines (just ">")
+            new_lines.append("")
+    
+    # Join with spaces, but handle empty lines carefully
+    content = ""
+    for i, line in enumerate(new_lines):
+        if line == "":
+            if i > 0 and content and not content.endswith(" "):
+                content += " "  # Add space for empty line
+        else:
+            if content and not content.endswith(" "):
+                content += " "  # Add space between non-empty lines
+            content += line
+    
+    # Process the content as text
     children = text_to_children(content)
     return ParentNode("blockquote", children)
